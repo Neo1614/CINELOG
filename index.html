@@ -1,4 +1,3 @@
-html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,10 +5,9 @@ html
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CINE LOGUE — Editorial Film Journal</title>
   
-  <!-- Google Fonts for Magazine Aesthetics -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Instrument+Serif:ital@0;1&family=Syne:wght@500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Syne:wght@500;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -19,7 +17,7 @@ html
       --text-dark: #121212;
       --text-muted: #8a8d93;
       --text-light: #e5e5e5;
-      --accent: #00e054; /* Letterboxd Green Accent */
+      --accent: #00e054;
       --star: #ffb020;
       --border: #262930;
       --font-headline: 'Syne', sans-serif;
@@ -35,7 +33,7 @@ html
       line-height: 1.5;
     }
 
-    /* --- Editorial Header --- */
+    /* --- Header & Taskbar --- */
     header {
       background-color: #08090a;
       border-bottom: 2px solid var(--border);
@@ -55,11 +53,12 @@ html
       letter-spacing: -1px;
       text-transform: uppercase;
       color: #fff;
+      cursor: pointer;
     }
 
     .brand span { color: var(--accent); }
 
-    nav { display: flex; gap: 1rem; }
+    nav { display: flex; gap: 0.8rem; }
 
     nav button {
       background: none;
@@ -92,77 +91,99 @@ html
       color: #000;
     }
 
-    /* --- Layout Grid --- */
+    /* --- Container & Views --- */
     .container {
-      max-width: 1400px;
+      max-width: 1300px;
       margin: 0 auto;
-      padding: 2.5rem 2rem;
+      padding: 3rem 2rem;
     }
 
     .tab-content { display: none; }
-    .tab-content.active { display: grid; }
+    .tab-content.active { display: block; }
 
-    .magazine-grid {
-      grid-template-columns: 320px 1fr;
-      gap: 3rem;
-    }
-
-    /* --- Left Sidebar Archive --- */
-    .sidebar {
-      border-right: 1px solid var(--border);
-      padding-right: 2rem;
-    }
-
-    .sidebar-title {
-      font-family: var(--font-headline);
-      font-size: 1.1rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 1.5rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid var(--accent);
-    }
-
-    .archive-item {
-      background: var(--card-bg);
+    /* --- Section 1: Home Page Cover --- */
+    .hero-landing {
       border: 1px solid var(--border);
-      padding: 1rem;
-      margin-bottom: 1rem;
+      background: linear-gradient(180deg, rgba(22,24,29,0.8) 0%, rgba(14,15,17,1) 100%);
+      padding: 6rem 3rem;
+      text-align: center;
       border-radius: 4px;
+    }
+
+    .hero-sub {
+      font-family: var(--font-headline);
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: 5rem;
+      font-weight: 400;
+      line-height: 1;
+      margin-bottom: 1.5rem;
+      color: #fff;
+    }
+
+    .hero-description {
+      max-width: 650px;
+      margin: 0 auto 2.5rem auto;
+      color: var(--text-muted);
+      font-size: 1.15rem;
+      line-height: 1.7;
+    }
+
+    .hero-action {
+      background: var(--accent);
+      color: #000;
+      font-family: var(--font-headline);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      border: none;
+      padding: 1rem 2.5rem;
+      font-size: 0.95rem;
       cursor: pointer;
       transition: transform 0.2s;
     }
 
-    .archive-item:hover { transform: translateX(4px); }
+    .hero-action:hover { transform: translateY(-2px); }
 
-    .archive-item img {
-      width: 100%;
-      height: 140px;
-      object-fit: cover;
-      border-radius: 2px;
+    /* --- Empty States --- */
+    .empty-state {
+      text-align: center;
+      padding: 5rem 2rem;
+      border: 1px dashed var(--border);
+      border-radius: 4px;
+      color: var(--text-muted);
+    }
+
+    .empty-state h3 {
+      font-family: var(--font-headline);
+      text-transform: uppercase;
+      color: #fff;
+      font-size: 1.3rem;
       margin-bottom: 0.5rem;
     }
 
-    .archive-item h4 {
-      font-family: var(--font-headline);
-      color: #fff;
-      font-size: 1rem;
-    }
-
-    /* --- Main Editorial Spread --- */
+    /* --- Section 2: Latest Reviews View --- */
     .editorial-spread {
       background: var(--paper);
       color: var(--text-dark);
       padding: 3rem;
       border-radius: 4px;
       box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      margin-bottom: 3rem;
     }
 
     .spread-header {
       display: grid;
-      grid-template-columns: 240px 1fr;
+      grid-template-columns: 220px 1fr;
       gap: 2.5rem;
-      margin-bottom: 3rem;
+      margin-bottom: 2.5rem;
       padding-bottom: 2rem;
       border-bottom: 2px solid var(--text-dark);
     }
@@ -171,32 +192,32 @@ html
       width: 100%;
       box-shadow: 0 10px 20px rgba(0,0,0,0.3);
       border-radius: 2px;
+      background: #ccc;
+      min-height: 300px;
+      object-fit: cover;
     }
 
     .meta-details .year {
       font-family: var(--font-headline);
       font-weight: 700;
       color: #666;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
 
     .meta-details h2 {
       font-family: var(--font-headline);
-      font-size: 3.5rem;
+      font-size: 3rem;
       font-weight: 800;
-      line-height: 0.95;
+      line-height: 1;
       text-transform: uppercase;
-      letter-spacing: -1px;
       margin: 0.5rem 0 1rem 0;
     }
 
     .stars-large {
       color: var(--accent);
-      font-size: 2.2rem;
-      letter-spacing: 2px;
+      font-size: 2rem;
     }
 
-    /* Multi-column Body Text */
     .editorial-columns {
       column-count: 2;
       column-gap: 2.5rem;
@@ -207,29 +228,7 @@ html
       text-align: justify;
     }
 
-    /* Magazine Drop-Cap */
-    .editorial-columns p::first-letter {
-      font-family: var(--font-serif);
-      font-size: 4rem;
-      float: left;
-      line-height: 0.8;
-      padding-right: 8px;
-      font-weight: bold;
-    }
-
-    .pull-quote {
-      font-family: var(--font-serif);
-      font-size: 1.8rem;
-      font-style: italic;
-      line-height: 1.2;
-      border-top: 1px solid var(--text-dark);
-      border-bottom: 1px solid var(--text-dark);
-      padding: 1rem 0;
-      margin: 1.5rem 0;
-      column-span: all;
-    }
-
-    /* --- Magazine Comments --- */
+    /* Comments */
     .comments-section {
       margin-top: 3rem;
       padding-top: 2rem;
@@ -239,11 +238,9 @@ html
     .comments-section h3 {
       font-family: var(--font-headline);
       text-transform: uppercase;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       margin-bottom: 1rem;
     }
-
-    .comment-list { margin-bottom: 1.5rem; }
 
     .comment-item {
       background: rgba(0,0,0,0.03);
@@ -262,7 +259,48 @@ html
       color: #555;
     }
 
-    /* --- Form Styling --- */
+    /* --- Section 3: Archive Grid --- */
+    .archive-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .archive-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.25rem;
+    }
+
+    .archive-card img {
+      width: 100%;
+      height: 380px;
+      object-fit: cover;
+      margin-bottom: 1rem;
+      border-radius: 2px;
+    }
+
+    .archive-card h3 {
+      font-family: var(--font-headline);
+      color: #fff;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+    }
+
+    .archive-card .stars {
+      color: var(--star);
+      margin: 0.3rem 0;
+    }
+
+    .archive-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.4;
+      margin-top: 0.5rem;
+    }
+
+    /* --- Section 4: Submission Form --- */
     .form-spread {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -312,100 +350,68 @@ html
 
     button.submit-btn:hover { opacity: 0.9; }
 
-    @media (max-width: 900px) {
-      .magazine-grid { grid-template-columns: 1fr; }
-      .sidebar { border-right: none; border-bottom: 1px solid var(--border); padding-bottom: 2rem; }
+    @media (max-width: 800px) {
       .spread-header { grid-template-columns: 1fr; }
       .editorial-columns { column-count: 1; }
+      .hero-title { font-size: 3rem; }
+      header { padding: 1rem; flex-direction: column; gap: 1rem; }
     }
   </style>
 </head>
 <body>
 
+  <!-- Taskbar -->
   <header>
-    <div class="brand">Cine<span>logue</span></div>
+    <div class="brand" onclick="switchTab('home')">Cine<span>logue</span></div>
     <nav>
-      <button class="nav-btn active" onclick="switchTab('archive')">Issue #01 — Reviews</button>
+      <button class="nav-btn active" onclick="switchTab('home')">Home</button>
+      <button class="nav-btn" onclick="switchTab('latest')">Reviews</button>
+      <button class="nav-btn" onclick="switchTab('archive')">Archive</button>
       <button class="nav-btn btn-cta" onclick="switchTab('submit')">Submit Review</button>
     </nav>
   </header>
 
   <div class="container">
     
-    <!-- Tab 1: Editorial Review Spread -->
-    <div id="archive" class="tab-content active magazine-grid">
-      
-      <!-- Sidebar Archives -->
-      <aside class="sidebar">
-        <div class="sidebar-title">Archive Feed</div>
-        
-        <div class="archive-item">
-          <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500&q=80" alt="Poster Frame">
-          <h4>OPPENHEIMER</h4>
-          <span style="color: var(--star)">★★★★★</span>
-        </div>
-
-        <div class="archive-item">
-          <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&q=80" alt="Poster Frame">
-          <h4>DUNE: PART TWO</h4>
-          <span style="color: var(--star)">★★★★½</span>
-        </div>
-      </aside>
-
-      <!-- Main Feature Essay -->
-      <main class="editorial-spread" id="essayContainer">
-        <div class="spread-header">
-          <div class="poster-frame">
-            <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500&q=80" alt="Film Visual">
-          </div>
-          <div class="meta-details">
-            <span class="year">( 2023 ) — FEATURED ESSAY</span>
-            <h2>OPPENHEIMER</h2>
-            <div class="stars-large">★★★★★</div>
-            <p style="margin-top: 1rem; font-family: var(--font-headline); font-size: 0.85rem; text-transform: uppercase;">By Editorial Staff</p>
-          </div>
-        </div>
-
-        <div class="pull-quote">
-          "A masterpiece of dread, tension, and kinetic biographical drama that demands immediate reflection."
-        </div>
-
-        <div class="editorial-columns">
-          <p>
-            Christopher Nolan’s explosive chamber drama functions less like a standard biopic and more like an impending disaster film where the devastation is moral rather than purely physical. From the opening moments, atomic theory is rendered not as academic pursuit, but as raw, unstable energy waiting to be unleashed.
-          </p>
-          <p>
-            What elevates the film beyond mere technical brilliance is its unwavering focus on political intrigue and personal guilt. Cillian Murphy delivers a tour-de-force performance, capturing a man caught between the exhilaration of discovery and the horrifying realization of what he has unleashed upon human history.
-          </p>
-        </div>
-
-        <!-- Community Comments Section -->
-        <section class="comments-section">
-          <h3>Discussions & Letters</h3>
-          <div class="comment-list" id="commentList">
-            <div class="comment-item">
-              <span class="comment-author">Marcus V.</span>
-              The editing during the Trinity test sequence was unparalleled tension building.
-            </div>
-          </div>
-
-          <form onsubmit="addComment(event)">
-            <input type="text" placeholder="Your Name or Handle" required style="margin-bottom: 0.5rem; background: #fff; color: #000; border-color: #ccc;">
-            <textarea placeholder="Write a response..." rows="2" required style="margin-bottom: 0.5rem; background: #fff; color: #000; border-color: #ccc;"></textarea>
-            <button class="submit-btn" type="submit" style="width: auto; padding: 0.6rem 1.5rem;">Post Response</button>
-          </form>
-        </section>
-      </main>
-
+    <!-- 1. Introductory Home Page -->
+    <div id="home" class="tab-content active">
+      <div class="hero-landing">
+        <div class="hero-sub">Editorial Cinema Journal</div>
+        <h1 class="hero-title">Long-Form Critical Essays & Community Reviews</h1>
+        <p class="hero-description">
+          A minimalist space dedicated to thoughtful film analysis, essay reviews, and reader discussions.
+        </p>
+        <button class="hero-action" onclick="switchTab('submit')">Write Your First Essay</button>
+      </div>
     </div>
 
-    <!-- Tab 2: Submission Form -->
+    <!-- 2. Latest Reviews View -->
+    <div id="latest" class="tab-content">
+      <div id="reviewsFeed">
+        <div class="empty-state">
+          <h3>No Reviews Published Yet</h3>
+          <p>Be the first to publish a review using the submission form.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Review Archives View -->
+    <div id="archive" class="tab-content">
+      <div id="archiveGrid" class="archive-grid">
+        <div class="empty-state" style="grid-column: 1 / -1;">
+          <h3>Archive is Empty</h3>
+          <p>Submitted reviews will automatically populate here.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Community Submission Form -->
     <div id="submit" class="tab-content">
       <div class="form-spread">
         <h2>Submit an Essay Review</h2>
         <form id="reviewForm" onsubmit="submitReview(event)">
           <label>Film Title & Release Year</label>
-          <input type="text" id="filmTitle" placeholder="e.g., POOR THINGS (2023)" required>
+          <input type="text" id="filmTitle" placeholder="e.g., METROPOLIS (1927)" required>
 
           <label>Star Rating</label>
           <select id="rating">
@@ -413,18 +419,20 @@ html
             <option value="★★★★½">★★★★½ (4.5 Stars)</option>
             <option value="★★★★☆">★★★★☆ (4 Stars)</option>
             <option value="★★★☆☆">★★★☆☆ (3 Stars)</option>
+            <option value="★★☆☆☆">★★☆☆☆ (2 Stars)</option>
+            <option value="★☆☆☆☆">★☆☆☆☆ (1 Star)</option>
           </select>
 
-          <label>Poster / Stills Image URL (Optional)</label>
-          <input type="url" id="imageUrl" placeholder="https://image-link.com/poster.jpg">
+          <label>Poster Image URL (Optional)</label>
+          <input type="url" id="imageUrl" placeholder="https://example.com/poster.jpg">
 
           <label>Essay Review</label>
-          <textarea id="essayText" rows="8" placeholder="Write your full essay review here..." required></textarea>
+          <textarea id="essayText" rows="10" placeholder="Write your full essay review here..." required></textarea>
 
           <label>Author / Critic Name</label>
-          <input type="text" id="authorName" placeholder="e.g., J. Miller" required>
+          <input type="text" id="authorName" placeholder="e.g., Alex Mercer" required>
 
-          <button type="submit" class="submit-btn">Publish to Archive</button>
+          <button type="submit" class="submit-btn">Publish to Journal</button>
         </form>
       </div>
     </div>
@@ -432,12 +440,19 @@ html
   </div>
 
   <script>
+    let reviewCount = 0;
+
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
       
       document.getElementById(tabId).classList.add('active');
-      event.target.classList.add('active');
+      
+      const buttons = document.querySelectorAll('.nav-btn');
+      if (tabId === 'home') buttons[0].classList.add('active');
+      if (tabId === 'latest') buttons[1].classList.add('active');
+      if (tabId === 'archive') buttons[2].classList.add('active');
+      if (tabId === 'submit') buttons[3].classList.add('active');
     }
 
     function addComment(e) {
@@ -445,32 +460,42 @@ html
       const form = e.target;
       const name = form.elements[0].value;
       const text = form.elements[1].value;
+      const commentList = form.previousElementSibling;
 
       const commentDiv = document.createElement('div');
       commentDiv.className = 'comment-item';
       commentDiv.innerHTML = `<span class="comment-author">${name}</span>${text}`;
 
-      document.getElementById('commentList').appendChild(commentDiv);
+      commentList.appendChild(commentDiv);
       form.reset();
     }
 
     function submitReview(e) {
       e.preventDefault();
+      
       const title = document.getElementById('filmTitle').value;
       const rating = document.getElementById('rating').value;
       const imageUrl = document.getElementById('imageUrl').value || 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&q=80';
       const essay = document.getElementById('essayText').value;
       const author = document.getElementById('authorName').value;
 
-      // Update Main Spread with New Review
-      const essayContainer = document.getElementById('essayContainer');
-      essayContainer.innerHTML = `
+      // Clear empty states on first submission
+      if (reviewCount === 0) {
+        document.getElementById('reviewsFeed').innerHTML = '';
+        document.getElementById('archiveGrid').innerHTML = '';
+      }
+      reviewCount++;
+
+      // 1. Render to Reviews Tab
+      const newReviewSpread = document.createElement('article');
+      newReviewSpread.className = 'editorial-spread';
+      newReviewSpread.innerHTML = `
         <div class="spread-header">
           <div class="poster-frame">
             <img src="${imageUrl}" alt="${title}">
           </div>
           <div class="meta-details">
-            <span class="year">COMMUNITY SUBMISSION</span>
+            <span class="year">ESSAY REVIEW</span>
             <h2>${title}</h2>
             <div class="stars-large">${rating}</div>
             <p style="margin-top: 1rem; font-family: var(--font-headline); font-size: 0.85rem; text-transform: uppercase;">By ${author}</p>
@@ -482,23 +507,32 @@ html
         </div>
 
         <section class="comments-section">
-          <h3>Discussions & Letters</h3>
-          <div class="comment-list" id="commentList"></div>
+          <h3>Discussions & Responses</h3>
+          <div class="comment-list"></div>
           <form onsubmit="addComment(event)">
-            <input type="text" placeholder="Your Name or Handle" required style="margin-bottom: 0.5rem; background: #fff; color: #000; border-color: #ccc;">
+            <input type="text" placeholder="Your Name" required style="margin-bottom: 0.5rem; background: #fff; color: #000; border-color: #ccc;">
             <textarea placeholder="Write a response..." rows="2" required style="margin-bottom: 0.5rem; background: #fff; color: #000; border-color: #ccc;"></textarea>
-            <button class="submit-btn" type="submit" style="width: auto; padding: 0.6rem 1.5rem;">Post Response</button>
+            <button class="submit-btn" type="submit" style="width: auto; padding: 0.6rem 1.5rem;">Post Comment</button>
           </form>
         </section>
       `;
+      document.getElementById('reviewsFeed').prepend(newReviewSpread);
+
+      // 2. Render to Archive Tab
+      const newArchiveCard = document.createElement('div');
+      newArchiveCard.className = 'archive-card';
+      newArchiveCard.innerHTML = `
+        <img src="${imageUrl}" alt="${title}">
+        <h3>${title}</h3>
+        <div class="stars">${rating}</div>
+        <p style="color: var(--accent); font-size: 0.8rem; text-transform: uppercase; font-family: var(--font-headline);">By ${author}</p>
+        <p>${essay.substring(0, 110)}...</p>
+      `;
+      document.getElementById('archiveGrid').prepend(newArchiveCard);
 
       document.getElementById('reviewForm').reset();
-      switchTab('archive');
+      switchTab('latest');
     }
   </script>
 </body>
 </html>
-
-```
-
-Once committed, allow 1–2 minutes for GitHub Pages to deploy the updated visual layout.
