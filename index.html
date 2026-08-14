@@ -1,0 +1,273 @@
+To build and host a Letterboxd-style film review site with user submissions and comments, you need a front-end host along with a lightweight backend database to store user-submitted data.
+
+### 1. Recommended Platforms to Build & Host
+
+| Component | Platform | Why Use It |
+| --- | --- | --- |
+| **Hosting (Frontend)** | **Netlify** or **Vercel** | Free hosting, instant deployments from GitHub, easy custom domains. |
+| **Database & Auth** | **Supabase** or **Firebase** | Free database to store community reviews and comment threads in real time without writing a custom backend. |
+| **No-Code Alternative** | **Framer** + **Airtable** | If you prefer no code, connect a Framer template to an Airtable backend for submissions. |
+
+---
+
+### 2. Complete Front-End Starter Code
+
+Here is a fully functional single-page web app template with multiple tabs, a star rating system, an archive view with essay reviews, a comment section, and a user submission form.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineLog - Film Reviews</title>
+  <style>
+    :root {
+      --bg: #14181c;
+      --card-bg: #1c2228;
+      --text: #9ab;
+      --text-bright: #fff;
+      --accent: #00e054;
+      --star: #ffb020;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #0d1013;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #2c3440;
+    }
+
+    h1 { color: var(--text-bright); margin: 0; font-size: 1.5rem; }
+
+    nav button {
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 1rem;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    nav button.active {
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Review Card */
+    .review-card {
+      background: var(--card-bg);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border: 1px solid #2c3440;
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .film-title {
+      color: var(--text-bright);
+      font-size: 1.5rem;
+      margin: 0;
+    }
+
+    .stars { color: var(--star); font-size: 1.2rem; }
+    .essay { color: #bcd; line-height: 1.6; margin: 1rem 0; }
+
+    /* Comments */
+    .comments-section {
+      border-top: 1px solid #2c3440;
+      padding-top: 1rem;
+      margin-top: 1rem;
+    }
+
+    .comment {
+      background: #14181c;
+      padding: 0.75rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .comment-author { color: var(--accent); font-weight: bold; }
+
+    /* Forms */
+    input, textarea, select {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+      background: #14181c;
+      border: 1px solid #2c3440;
+      color: var(--text-bright);
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    button.submit-btn {
+      background: var(--accent);
+      color: #000;
+      font-weight: bold;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>CineLog</h1>
+    <nav>
+      <button class="nav-btn active" onclick="switchTab('archive')">Reviews Archive</button>
+      <button class="nav-btn" onclick="switchTab('submit')">Submit Review</button>
+    </nav>
+  </header>
+
+  <div class="container">
+    
+    <!-- Tab 1: Review Archive -->
+    <div id="archive" class="tab-content active">
+      <div class="review-card">
+        <div class="review-header">
+          <h2 class="film-title">Dune: Part Two (2024)</h2>
+          <span class="stars">★★★★★</span>
+        </div>
+        <p class="essay">
+          A breathtaking achievement in modern sci-fi cinema. Villeneuve manages to scale up the political intrigue while giving every action sequence immense weight...
+        </p>
+        
+        <!-- Comments Section -->
+        <div class="comments-section">
+          <h4>Comments</h4>
+          <div id="comments-1">
+            <div class="comment">
+              <span class="comment-author">Alex:</span> Completely agree with the cinematography breakdown!
+            </div>
+          </div>
+          
+          <form onsubmit="addComment(event, 'comments-1')">
+            <input type="text" placeholder="Your name" required style="width: 30%; display: inline-block;">
+            <input type="text" placeholder="Add a comment..." required style="width: 65%; display: inline-block;">
+            <button class="submit-btn" type="submit" style="padding: 0.5rem 1rem;">Post</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Community Submission Form -->
+    <div id="submit" class="tab-content">
+      <div class="review-card">
+        <h2>Write a Review</h2>
+        <form id="reviewForm" onsubmit="submitReview(event)">
+          <label>Film Title & Year</label>
+          <input type="text" id="filmTitle" placeholder="e.g., Parasite (2019)" required>
+
+          <label>Rating</label>
+          <select id="rating">
+            <option value="★★★★★">5 Stars</option>
+            <option value="★★★★☆">4 Stars</option>
+            <option value="★★★☆☆">3 Stars</option>
+            <option value="★★☆☆☆">2 Stars</option>
+            <option value="★☆☆☆☆">1 Star</option>
+          </select>
+
+          <label>Your Essay / Review</label>
+          <textarea id="essayText" rows="6" placeholder="Write your full thoughts..." required></textarea>
+
+          <label>Your Name</label>
+          <input type="text" id="authorName" placeholder="e.g., CinemaFan99" required>
+
+          <button type="submit" class="submit-btn">Publish Review</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    function addComment(e, containerId) {
+      e.preventDefault();
+      const form = e.target;
+      const name = form.elements[0].value;
+      const text = form.elements[1].value;
+      
+      const commentDiv = document.createElement('div');
+      commentDiv.className = 'comment';
+      commentDiv.innerHTML = `<span class="comment-author">${name}:</span> ${text}`;
+      
+      document.getElementById(containerId).appendChild(commentDiv);
+      form.reset();
+    }
+
+    function submitReview(e) {
+      e.preventDefault();
+      const title = document.getElementById('filmTitle').value;
+      const rating = document.getElementById('rating').value;
+      const essay = document.getElementById('essayText').value;
+      const author = document.getElementById('authorName').value;
+
+      const newReview = document.createElement('div');
+      newReview.className = 'review-card';
+      const commentId = 'comments-' + Date.now();
+
+      newReview.innerHTML = `
+        <div class="review-header">
+          <h2 class="film-title">${title}</h2>
+          <span class="stars">${rating}</span>
+        </div>
+        <p style="color: var(--accent); font-size: 0.85rem;">Reviewed by ${author}</p>
+        <p class="essay">${essay}</p>
+        <div class="comments-section">
+          <h4>Comments</h4>
+          <div id="${commentId}"></div>
+          <form onsubmit="addComment(event, '${commentId}')">
+            <input type="text" placeholder="Your name" required style="width: 30%; display: inline-block;">
+            <input type="text" placeholder="Add a comment..." required style="width: 65%; display: inline-block;">
+            <button class="submit-btn" type="submit" style="padding: 0.5rem 1rem;">Post</button>
+          </form>
+        </div>
+      `;
+
+      document.getElementById('archive').prepend(newReview);
+      document.getElementById('reviewForm').reset();
+      switchTab('archive');
+    }
+  </script>
+</body>
+</html>
+
+```
