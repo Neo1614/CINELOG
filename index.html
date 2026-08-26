@@ -336,11 +336,10 @@
       appId: "1:37277377178:web:198b7236aebef0b3fbf523"
     };
 
-    // Connect to your specific database
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // 3. THE PAGE FLIPPER (Keeps your tabs working)
+    // 3. THE PAGE FLIPPER
     window.switchTab = function(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
@@ -352,18 +351,16 @@
       if (tabId === 'archive') buttons[2].classList.add('active');
     }
 
-    // 4. THE NEW "SUBMIT" FUNCTION (Saves to the cloud)
+    // 4. THE SUBMIT REVIEW FUNCTION
     window.submitReview = async function(e) {
       e.preventDefault();
       
-      // Grab the text you typed
       const title = document.getElementById('filmTitle').value;
       const rating = document.getElementById('rating').value;
       const imageUrl = document.getElementById('imageUrl').value || 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&q=80';
       const essay = document.getElementById('essayText').value;
       const author = document.getElementById('authorName').value;
 
-      // Send it to the Firestore Database
       await addDoc(collection(db, "reviews"), {
         title: title,
         rating: rating,
@@ -373,21 +370,38 @@
         timestamp: new Date()
       });
 
-      // Clear the form and refresh the screen to show the new saved review
       document.getElementById('reviewForm').reset();
       window.loadArchive();
       window.switchTab('archive');
     }
 
-    // 5. THE NEW "LOAD ARCHIVE" FUNCTION (Reads from the cloud)
+    // 5. THE NEW SUBMIT COMMENT FUNCTION
+    window.submitComment = async function(e, reviewId) {
+      e.preventDefault();
+      
+      // Grab the specific form that was just filled out
+      const form = e.target;
+      const name = form.elements[0].value;
+      const text = form.elements[1].value;
+
+      // Save it to a sub-folder called "comments" inside this exact review
+      await addDoc(collection(db, "reviews", reviewId, "comments"), {
+        name: name,
+        text: text,
+        timestamp: new Date()
+      });
+
+      // Reload the page to show the new comment
+      window.loadArchive();
+    }
+
+    // 6. THE UPGRADED "LOAD ARCHIVE" FUNCTION (Now fetches comments too!)
     window.loadArchive = async function() {
       const container = document.getElementById('archiveContainer');
       
-      // Check the database for all reviews, ordered by newest first
       const q = query(collection(db, "reviews"), orderBy("timestamp", "desc"));
       const querySnapshot = await getDocs(q);
       
-      // If the database is empty, show the empty state message
       if (querySnapshot.empty) {
         container.innerHTML = `
           <div class="empty-state">
@@ -398,13 +412,32 @@
         return;
       }
 
-      container.innerHTML = ''; // Clear out the old stuff
+      container.innerHTML = ''; 
 
-      // Rebuild the beautiful review cards using your original HTML layout
-      querySnapshot.forEach((doc) => {
+      // We use a specific type of loop here so the computer can pause to fetch comments
+      for (const doc of querySnapshot.docs) {
         const data = doc.data();
+        const reviewId = doc.id; // This is the secret, unique ID for this review
+
+        // Go get the comments specific to THIS review
+        const commentsQ = query(collection(db, "reviews", reviewId, "comments"), orderBy("timestamp", "asc"));
+        const commentsSnapshot = await getDocs(commentsQ);
+        
+        let commentsHTML = '';
+        commentsSnapshot.forEach((commentDoc) => {
+          const cData = commentDoc.data();
+          commentsHTML += `
+            <div class="comment-item">
+              <span class="comment-author">${cData.name}</span>
+              ${cData.text}
+            </div>
+          `;
+        });
+
         const reviewCard = document.createElement('article');
         reviewCard.className = 'editorial-spread';
+        
+        // Notice how the comment form at the bottom uses the secret reviewId!
         reviewCard.innerHTML = `
           <div class="spread-header">
             <div class="poster-frame">
@@ -421,15 +454,23 @@
           </div>
           <section class="comments-wrapper">
             <h4 style="font-family: var(--font-headline); text-transform: uppercase; margin-bottom: 0.8rem;">Comments</h4>
-            <div class="comment-list"></div>
-            <p style="font-size: 0.8rem; color: gray;">(We will hook comments to the database next!)</p>
+            
+            <div class="comment-list">
+              ${commentsHTML}
+            </div>
+
+            <form onsubmit="window.submitComment(event, '${reviewId}')" style="margin-top: 1rem;">
+              <input type="text" placeholder="Your Name" required style="margin-bottom: 0.4rem; background: #fff; color: #000; border-color: #ccc;">
+              <textarea placeholder="Write a comment..." rows="2" required style="margin-bottom: 0.4rem; background: #fff; color: #000; border-color: #ccc;"></textarea>
+              <button class="submit-btn" type="submit" style="width: auto; padding: 0.5rem 1rem; margin-top: 0;">Post Comment</button>
+            </form>
           </section>
         `;
         container.appendChild(reviewCard);
-      });
+      }
     }
 
-    // 6. Tell the website to fetch reviews the second someone opens CineLogue
+    // 7. Tell the website to fetch reviews the second someone opens CineLogue
     window.loadArchive();
   </script>
 </body>
