@@ -322,84 +322,68 @@
   </div>
 
   <script>
-    let hasReviews = false;
+ <script type="module">
+  // 1. IMPORT THE DATABASE ENGINE
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-      
-      document.getElementById(tabId).classList.add('active');
-      
-      const buttons = document.querySelectorAll('.nav-btn');
-      if (tabId === 'home') buttons[0].classList.add('active');
-      if (tabId === 'write') buttons[1].classList.add('active');
-      if (tabId === 'archive') buttons[2].classList.add('active');
-    }
+  // 2. YOUR UNIQUE FILING CABINET KEYS (We need to get these next)
+  const firebaseConfig = {
+    apiKey: "WE_NEED_YOUR_API_KEY",
+    projectId: "WE_NEED_YOUR_PROJECT_ID",
+    // ... we will fill the rest in once we create your free account
+  };
 
-    function addComment(e) {
-      e.preventDefault();
-      const form = e.target;
-      const name = form.elements[0].value;
-      const text = form.elements[1].value;
-      const commentList = form.previousElementSibling;
+  // Connect to your specific database
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-      const commentDiv = document.createElement('div');
-      commentDiv.className = 'comment-item';
-      commentDiv.innerHTML = `<span class="comment-author">${name}</span>${text}`;
+  // 3. THE PAGE FLIPPER (Unchanged - keeps your tabs working perfectly)
+  window.switchTab = function(tabId) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    
+    const buttons = document.querySelectorAll('.nav-btn');
+    if (tabId === 'home') buttons[0].classList.add('active');
+    if (tabId === 'write') buttons[1].classList.add('active');
+    if (tabId === 'archive') buttons[2].classList.add('active');
+  }
 
-      commentList.appendChild(commentDiv);
-      form.reset();
-    }
+  // 4. THE NEW "SUBMIT" FUNCTION
+  window.submitReview = async function(e) {
+    e.preventDefault();
+    
+    // Grab the text you typed (same as before)
+    const title = document.getElementById('filmTitle').value;
+    const rating = document.getElementById('rating').value;
+    const essay = document.getElementById('essayText').value;
+    const author = document.getElementById('authorName').value;
 
-    function submitReview(e) {
-      e.preventDefault();
-      
-      const title = document.getElementById('filmTitle').value;
-      const rating = document.getElementById('rating').value;
-      const imageUrl = document.getElementById('imageUrl').value || 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&q=80';
-      const essay = document.getElementById('essayText').value;
-      const author = document.getElementById('authorName').value;
+    // INSTEAD of just taping it to the screen, send it to the database:
+    await addDoc(collection(db, "reviews"), {
+      title: title,
+      rating: rating,
+      essay: essay,
+      author: author,
+      timestamp: new Date()
+    });
 
-      const container = document.getElementById('archiveContainer');
+    // Clear the form and refresh the screen to show the new saved review
+    document.getElementById('reviewForm').reset();
+    loadArchive();
+    switchTab('archive');
+  }
 
-      if (!hasReviews) {
-        container.innerHTML = '';
-        hasReviews = true;
-      }
+  // 5. THE NEW "LOAD ARCHIVE" FUNCTION
+  async function loadArchive() {
+    // This tells the website: "Go to the database, get every review, and put them on the screen."
+    // (I will write the code that builds your beautiful review cards here once we connect the database)
+  }
 
-      const reviewCard = document.createElement('article');
-      reviewCard.className = 'editorial-spread';
-      reviewCard.innerHTML = `
-        <div class="spread-header">
-          <div class="poster-frame">
-            <img src="${imageUrl}" alt="${title}">
-          </div>
-          <div class="meta-details">
-            <h2>${title}</h2>
-            <div class="stars-large">${rating}</div>
-            <p style="margin-top: 0.5rem; font-family: var(--font-headline); font-size: 0.8rem; text-transform: uppercase;">Reviewed by ${author}</p>
-          </div>
-        </div>
-
-        <div class="editorial-body">
-          <p>${essay}</p>
-        </div>
-
-        <section class="comments-wrapper">
-          <h4 style="font-family: var(--font-headline); text-transform: uppercase; margin-bottom: 0.8rem;">Comments</h4>
-          <div class="comment-list"></div>
-          <form onsubmit="addComment(event)" style="margin-top: 1rem;">
-            <input type="text" placeholder="Your Name" required style="margin-bottom: 0.4rem; background: #fff; color: #000; border-color: #ccc;">
-            <textarea placeholder="Write a comment..." rows="2" required style="margin-bottom: 0.4rem; background: #fff; color: #000; border-color: #ccc;"></textarea>
-            <button class="submit-btn" type="submit" style="width: auto; padding: 0.5rem 1rem; margin-top: 0;">Post Comment</button>
-          </form>
-        </section>
-      `;
-
-      container.prepend(reviewCard);
-      document.getElementById('reviewForm').reset();
-      switchTab('archive');
-    }
+  // Tell the website to check the database the second someone opens CineLogue
+  loadArchive();
+</script>
   </script>
 </body>
 </html>
