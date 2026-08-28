@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+   <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -21,21 +21,19 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* Enforcing the Syne font everywhere for absolute consistency */
     body, input, textarea, select, button {
       color: var(--text-light);
       font-family: var(--font-main); 
       line-height: 1.6;
-      /* The new image background setup */
       background-color: #050506; 
       background-image: url('background.jpg');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
       overflow-x: hidden;
+      scroll-behavior: smooth;
     }
 
-    /* --- Minimalist Header --- */
     header {
       padding: 2rem 3rem;
       position: absolute;
@@ -44,6 +42,7 @@
       z-index: 100;
       display: flex;
       justify-content: space-between;
+      align-items: center;
     }
 
     .brand {
@@ -57,7 +56,38 @@
       text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     }
 
-    /* --- Single Page Scroll Layout --- */
+    nav { display: flex; gap: 0.5rem; }
+
+    nav button {
+      background: none;
+      border: 1px solid transparent;
+      color: rgba(255,255,255,0.6);
+      font-family: var(--font-main);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      letter-spacing: 1px;
+    }
+
+    nav button:hover, nav button.active {
+      color: #fff;
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { 
+      display: block; 
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
     .hero-section {
       height: 100vh;
       display: flex;
@@ -69,7 +99,7 @@
     }
 
     .hero-title {
-      font-size: clamp(3rem, 8vw, 7rem);
+      font-size: clamp(2.5rem, 8vw, 7rem);
       font-weight: 800;
       line-height: 1;
       margin-bottom: 1rem;
@@ -79,7 +109,7 @@
     }
 
     .hero-subtitle {
-      font-size: 1.2rem;
+      font-size: clamp(0.9rem, 3vw, 1.2rem);
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 2px;
@@ -94,7 +124,7 @@
       background: rgba(0,0,0,0.4);
     }
 
-    /* --- Glassmorphism Review Cards --- */
+    /* --- Dynamic Scroll Reveal Styling --- */
     .editorial-spread {
       background: var(--glass-bg);
       backdrop-filter: blur(25px);
@@ -104,11 +134,22 @@
       padding: 3rem;
       margin-bottom: 4rem;
       box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      
+      /* Hidden state before scrolling */
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
     }
 
-    .editorial-spread:hover {
-      transform: translateY(-10px);
+    /* Visible state triggered by JavaScript */
+    .editorial-spread.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .editorial-spread.is-visible:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 40px 70px rgba(0,0,0,0.7);
     }
 
     .spread-header {
@@ -128,9 +169,9 @@
     }
 
     .meta-details h2 {
-      font-size: 3.5rem;
+      font-size: clamp(2rem, 4vw, 3.5rem);
       text-transform: uppercase;
-      line-height: 1;
+      line-height: 1.1;
       margin-bottom: 1rem;
       font-weight: 800;
       letter-spacing: -1px;
@@ -138,9 +179,9 @@
 
     .stars-large { color: var(--accent); font-size: 1.5rem; letter-spacing: 2px;}
     
-    /* --- The New Reaction Buttons --- */
     .reaction-bar {
       display: flex;
+      flex-wrap: wrap;
       gap: 1rem;
       margin-top: 1.5rem;
     }
@@ -160,16 +201,21 @@
       transition: all 0.3s ease;
     }
     
-    .react-btn:hover { background: #fff; color: #000; }
+    .react-btn:hover { background: #fff; color: #000; transform: scale(1.05); }
 
+    /* Fix for cut-off letters (Descenders) */
     .editorial-body {
       font-size: 1.15rem;
-      line-height: 1.8;
+      line-height: 1.9;
       color: rgba(255,255,255,0.9);
       font-weight: 400;
+      padding-bottom: 0.4em; 
+    }
+    
+    .editorial-body p {
+      padding-bottom: 0.5em; /* Gives letters like 'g' room to breathe */
     }
 
-    /* --- Sleek Comments --- */
     .comments-wrapper {
       margin-top: 3rem;
       padding-top: 2rem;
@@ -181,6 +227,8 @@
       border-bottom: 1px solid rgba(255,255,255,0.05);
       font-size: 1rem;
       color: rgba(255,255,255,0.9);
+      line-height: 1.6;
+      padding-bottom: 1.2rem; /* Additional breathing room */
     }
 
     .comment-author {
@@ -192,7 +240,36 @@
       margin-bottom: 0.3rem;
     }
 
-    /* --- The Hidden Admin Modal --- */
+    .comment-form {
+      margin-top: 1.5rem; 
+      display: flex; 
+      gap: 0.5rem;
+    }
+    .comment-input-name { width: 30%; }
+    .comment-input-text { width: 70%; }
+    
+    .comment-input-name, .comment-input-text {
+      background: rgba(0,0,0,0.3); 
+      border: 1px solid var(--border); 
+      margin: 0; 
+      padding: 0.8rem;
+    }
+    .comment-submit-btn { width: auto; padding: 0 1.5rem; margin: 0; }
+
+    /* Placeholder content for new tabs */
+    .placeholder-content {
+      padding: 10rem 10%;
+      text-align: center;
+      min-height: 100vh;
+      background: rgba(0,0,0,0.6);
+    }
+    .placeholder-content h2 {
+      font-size: 3rem;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+
+    /* Hidden Admin Modal */
     .admin-modal {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
@@ -238,23 +315,54 @@
     
     .submit-btn:hover { background: #ccc; }
 
+    /* --- MOBILE RESPONSIVE SHAPE-SHIFTING --- */
     @media (max-width: 768px) {
-      .spread-header { grid-template-columns: 1fr; }
-      .hero-title { font-size: 3rem; }
+      header { 
+        padding: 1.5rem; 
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
       .hero-section { padding: 0 5%; }
-      .archive-section { padding: 5rem 5%; }
+      .archive-section { padding: 3rem 5%; }
+      
+      .editorial-spread { 
+        padding: 1.5rem; 
+        margin-bottom: 2.5rem; 
+      }
+      
+      .spread-header { 
+        grid-template-columns: 1fr; 
+        gap: 1.5rem;
+        padding-bottom: 1.5rem;
+      }
+      
+      .poster-frame img { height: auto; aspect-ratio: 2/3; }
+      
+      .meta-details h2 { font-size: 2.2rem; }
+      
+      .form-card { padding: 1.5rem; }
+      
+      .comment-form { flex-direction: column; }
+      .comment-input-name, .comment-input-text { width: 100%; }
+      .comment-submit-btn { width: 100%; padding: 1rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- THE HEADER (Double click to login) -->
   <header>
     <div class="brand" ondblclick="window.secretLogin()">CineLogue</div>
+    <!-- New Navigation Scaffold -->
+    <nav>
+      <button class="nav-btn active" onclick="window.switchTab('mainArchive')">Reviews</button>
+      <button class="nav-btn" onclick="window.switchTab('visuals')">Visuals</button>
+      <button class="nav-btn" onclick="window.switchTab('about')">Strategy</button>
+    </nav>
   </header>
 
-  <!-- THE PUBLIC SITE -->
-  <main>
+  <!-- TAB 1: THE MAIN REVIEWS -->
+  <main id="mainArchive" class="tab-content active">
     <section class="hero-section">
       <h1 class="hero-title">CINELOGUE<br>REVIEWS</h1>
       <p class="hero-subtitle">I'd love any feedback, please leave a comment</p>
@@ -265,7 +373,22 @@
     </section>
   </main>
 
-  <!-- THE HIDDEN ADMIN DESK -->
+  <!-- TAB 2: VISUALS GALLERY -->
+  <main id="visuals" class="tab-content">
+    <div class="placeholder-content">
+      <h2>Concept & Illustration</h2>
+      <p style="margin-top: 1rem; color: #a1a5ab;">A dedicated space for custom digital art and lighting studies.</p>
+    </div>
+  </main>
+
+  <!-- TAB 3: ABOUT / STRATEGY -->
+  <main id="about" class="tab-content">
+    <div class="placeholder-content">
+      <h2>Industry Profile</h2>
+      <p style="margin-top: 1rem; color: #a1a5ab;">A professional biography detailing academic background and curation strategy.</p>
+    </div>
+  </main>
+
   <div id="adminModal" class="admin-modal">
     <div class="form-card">
       <button class="close-btn" onclick="window.closeModal()">✕</button>
@@ -303,7 +426,20 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Modal Controls for the Secret Knock
+    // Dynamic Tab Navigation
+    window.switchTab = function(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      window.scrollTo(0, 0); // Scroll to top on tab change
+      
+      const buttons = document.querySelectorAll('.nav-btn');
+      if (tabId === 'mainArchive') buttons[0].classList.add('active');
+      if (tabId === 'visuals') buttons[1].classList.add('active');
+      if (tabId === 'about') buttons[2].classList.add('active');
+    }
+
     window.secretLogin = function() {
       const passcode = prompt("Director Access Required:");
       if (passcode === "action") {
@@ -315,7 +451,21 @@
       document.getElementById('adminModal').classList.remove('active');
     }
 
-    // Database Functions
+    // Scroll Reveal Observer Setup
+    const setupScrollObserver = () => {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
+        });
+      }, { threshold: 0.1 }); 
+
+      document.querySelectorAll('.editorial-spread').forEach((card) => {
+        observer.observe(card);
+      });
+    }
+
     window.submitReview = async function(e) {
       e.preventDefault();
       const title = document.getElementById('filmTitle').value;
@@ -342,21 +492,17 @@
 
     window.submitComment = async function(e, reviewId) {
       e.preventDefault();
-      
       const storageKey = `commented_${reviewId}`;
       if (localStorage.getItem(storageKey)) {
         alert("You have already left a comment on this review! Thank you for the feedback.");
         return; 
       }
-
       const form = e.target;
       const name = form.elements[0].value;
       const text = form.elements[1].value;
-
       await addDoc(collection(db, "reviews", reviewId, "comments"), {
         name: name, text: text, timestamp: new Date()
       });
-      
       localStorage.setItem(storageKey, 'true');
       window.loadArchive();
     }
@@ -367,15 +513,12 @@
         alert("You have already reacted to this review!");
         return;
       }
-
       const reviewRef = doc(db, "reviews", reviewId);
-      
       if (type === 'up') {
         await updateDoc(reviewRef, { thumbsUp: increment(1) });
       } else if (type === 'down') {
         await updateDoc(reviewRef, { thumbsDown: increment(1) });
       }
-      
       localStorage.setItem(storageKey, 'true');
       window.loadArchive(); 
     }
@@ -408,7 +551,7 @@
           commentsHTML += `
             <div class="comment-item">
               <span class="comment-author">${cData.name}</span>
-              ${cData.text}
+              <p>${cData.text}</p>
             </div>
           `;
         });
@@ -433,7 +576,6 @@
                   👎 ${thumbsDownCount}
                 </button>
               </div>
-
             </div>
           </div>
           <div class="editorial-body">
@@ -442,15 +584,18 @@
           <section class="comments-wrapper">
             <h4 style="text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; margin-bottom: 1rem;">Discussion</h4>
             <div class="comment-list">${commentsHTML}</div>
-            <form onsubmit="window.submitComment(event, '${reviewId}')" style="margin-top: 1.5rem; display: flex; gap: 0.5rem;">
-              <input type="text" placeholder="Name" required style="width: 30%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); margin: 0;">
-              <input type="text" placeholder="Add a comment..." required style="width: 70%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); margin: 0;">
-              <button class="submit-btn" type="submit" style="width: auto; padding: 0 1.5rem; margin: 0;">Post</button>
+            <form class="comment-form" onsubmit="window.submitComment(event, '${reviewId}')">
+              <input class="comment-input-name" type="text" placeholder="Name" required>
+              <input class="comment-input-text" type="text" placeholder="Add a comment..." required>
+              <button class="submit-btn comment-submit-btn" type="submit">Post</button>
             </form>
           </section>
         `;
         container.appendChild(reviewCard);
       }
+      
+      // Fire up the scroll animation engine once reviews are loaded
+      setupScrollObserver();
     }
 
     window.loadArchive();
