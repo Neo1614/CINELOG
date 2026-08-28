@@ -1,4 +1,4 @@
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -26,12 +26,22 @@
       font-family: var(--font-main); 
       line-height: 1.6;
       background-color: #050506; 
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    /* --- True Parallax Background Layer --- */
+    .parallax-bg {
+      position: fixed;
+      top: -10%; 
+      left: -5%;
+      width: 110vw;
+      height: 120vh;
       background-image: url('background.jpg');
       background-size: cover;
       background-position: center;
-      background-attachment: fixed;
-      overflow-x: hidden;
-      scroll-behavior: smooth;
+      z-index: -1;
+      will-change: transform;
     }
 
     header {
@@ -78,15 +88,9 @@
     }
 
     .tab-content { display: none; }
-    .tab-content.active { 
-      display: block; 
-      animation: fadeIn 0.5s ease forwards;
-    }
+    .tab-content.active { display: block; animation: fadeIn 0.5s ease forwards; }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     .hero-section {
       height: 100vh;
@@ -95,7 +99,7 @@
       justify-content: center;
       align-items: flex-start;
       padding: 0 10%;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%);
+      background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.9) 100%);
     }
 
     .hero-title {
@@ -121,10 +125,30 @@
     .archive-section {
       padding: 5rem 10%;
       min-height: 100vh;
-      background: rgba(0,0,0,0.4);
+      background: rgba(0,0,0,0.5);
     }
 
-    /* --- Dynamic Scroll Reveal Styling --- */
+    /* --- Dynamic 3D Scroll Reveal Styling --- */
+    .reveal-card {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    /* When visible, CSS Variables control the 3D mouse tilt */
+    .reveal-card.is-visible {
+      opacity: 1;
+      transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, 0px));
+      transition: transform 0.15s ease-out, box-shadow 0.4s ease, opacity 0.8s;
+    }
+
+    .reveal-card.is-visible:hover {
+      --ty: -8px;
+      box-shadow: 0 40px 70px rgba(0,0,0,0.7);
+      z-index: 10;
+    }
+
+    /* --- Glassmorphism Cards --- */
     .editorial-spread {
       background: var(--glass-bg);
       backdrop-filter: blur(25px);
@@ -134,22 +158,6 @@
       padding: 3rem;
       margin-bottom: 4rem;
       box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-      
-      /* Hidden state before scrolling */
-      opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
-    }
-
-    /* Visible state triggered by JavaScript */
-    .editorial-spread.is-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .editorial-spread.is-visible:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 40px 70px rgba(0,0,0,0.7);
     }
 
     .spread-header {
@@ -198,151 +206,70 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
     }
     
     .react-btn:hover { background: #fff; color: #000; transform: scale(1.05); }
 
-    /* Fix for cut-off letters (Descenders) */
-    .editorial-body {
-      font-size: 1.15rem;
-      line-height: 1.9;
-      color: rgba(255,255,255,0.9);
-      font-weight: 400;
-      padding-bottom: 0.4em; 
+    /* --- Haptic Burst Animation --- */
+    @keyframes hapticBurst {
+      0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.8); transform: scale(1); background: #fff; color: #000; }
+      50% { transform: scale(1.15); }
+      100% { box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); transform: scale(1.05); background: #fff; color: #000; }
     }
-    
-    .editorial-body p {
-      padding-bottom: 0.5em; /* Gives letters like 'g' room to breathe */
+    .burst-anim {
+      animation: hapticBurst 0.4s ease-out forwards;
     }
 
-    .comments-wrapper {
-      margin-top: 3rem;
-      padding-top: 2rem;
-      border-top: 1px solid var(--border);
-    }
+    .editorial-body { font-size: 1.15rem; line-height: 1.9; color: rgba(255,255,255,0.9); font-weight: 400; padding-bottom: 0.4em; }
+    .editorial-body p { padding-bottom: 0.5em; }
 
-    .comment-item {
-      padding: 1rem 0;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      font-size: 1rem;
-      color: rgba(255,255,255,0.9);
-      line-height: 1.6;
-      padding-bottom: 1.2rem; /* Additional breathing room */
-    }
+    .comments-wrapper { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+    .comment-item { padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 1rem; color: rgba(255,255,255,0.9); line-height: 1.6; padding-bottom: 1.2rem; }
+    .comment-author { font-weight: 800; font-size: 0.85rem; text-transform: uppercase; display: block; color: #fff; margin-bottom: 0.3rem; }
 
-    .comment-author {
-      font-weight: 800;
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      display: block;
-      color: #fff;
-      margin-bottom: 0.3rem;
-    }
-
-    .comment-form {
-      margin-top: 1.5rem; 
-      display: flex; 
-      gap: 0.5rem;
-    }
+    .comment-form { margin-top: 1.5rem; display: flex; gap: 0.5rem; }
     .comment-input-name { width: 30%; }
     .comment-input-text { width: 70%; }
-    
-    .comment-input-name, .comment-input-text {
-      background: rgba(0,0,0,0.3); 
-      border: 1px solid var(--border); 
-      margin: 0; 
-      padding: 0.8rem;
-    }
+    .comment-input-name, .comment-input-text { background: rgba(0,0,0,0.3); border: 1px solid var(--border); margin: 0; padding: 0.8rem; }
     .comment-submit-btn { width: auto; padding: 0 1.5rem; margin: 0; }
 
-    /* Placeholder content for new tabs */
-    .placeholder-content {
-      padding: 10rem 10%;
-      text-align: center;
-      min-height: 100vh;
-      background: rgba(0,0,0,0.6);
+    /* --- Concept & Visuals Grid --- */
+    .visuals-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem; }
+    .visual-card {
+      background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
     }
-    .placeholder-content h2 {
-      font-size: 3rem;
-      text-transform: uppercase;
-      font-weight: 800;
-    }
+    .visual-card img { width: 100%; height: auto; border-radius: 8px; margin-bottom: 1.5rem; box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+    .visual-card h3 { font-size: 1.5rem; text-transform: uppercase; font-weight: 800; margin-bottom: 0.5rem; line-height: 1.2; }
+    .visual-card p { font-size: 1.05rem; color: rgba(255,255,255,0.8); line-height: 1.6; padding-bottom: 0.5em; }
 
-    /* Hidden Admin Modal */
+    /* --- Hidden Admin Modal --- */
     .admin-modal {
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.9);
-      backdrop-filter: blur(20px);
-      z-index: 1000;
-      display: none; 
-      justify-content: center;
-      align-items: center;
-      padding: 2rem;
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); z-index: 1000;
+      display: none; justify-content: center; align-items: center; padding: 2rem;
     }
-
     .admin-modal.active { display: flex; }
-
-    .form-card {
-      background: #111;
-      border: 1px solid #333;
-      padding: 3rem;
-      width: 100%;
-      max-width: 600px;
-      border-radius: 12px;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    .close-btn {
-      float: right; background: none; border: none; color: #fff;
-      font-size: 1.5rem; cursor: pointer;
-    }
-
-    input, textarea, select {
-      padding: 1rem; margin-top: 0.5rem; margin-bottom: 1.5rem;
-      background: #000; border: 1px solid #333; color: #fff;
-      border-radius: 4px;
-    }
-
-    .submit-btn {
-      background: #fff; color: #000;
-      font-weight: 800; text-transform: uppercase;
-      border: none; padding: 1.2rem; width: 100%; cursor: pointer;
-      border-radius: 4px; transition: 0.3s;
-    }
-    
+    .form-card { background: #111; border: 1px solid #333; padding: 3rem; width: 100%; max-width: 600px; border-radius: 12px; max-height: 90vh; overflow-y: auto; }
+    .close-btn { float: right; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
+    input, textarea, select { padding: 1rem; margin-top: 0.5rem; margin-bottom: 1.5rem; background: #000; border: 1px solid #333; color: #fff; border-radius: 4px; width: 100%; }
+    .submit-btn { background: #fff; color: #000; font-weight: 800; text-transform: uppercase; border: none; padding: 1.2rem; width: 100%; cursor: pointer; border-radius: 4px; transition: 0.3s; }
     .submit-btn:hover { background: #ccc; }
+    .admin-tabs { display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid #333; padding-bottom: 1rem;}
+    .admin-tab-btn { background: none; border: none; color: #777; font-weight: 800; text-transform: uppercase; cursor: pointer; padding: 0.5rem; font-size: 1rem; }
+    .admin-tab-btn.active { color: #fff; }
 
     /* --- MOBILE RESPONSIVE SHAPE-SHIFTING --- */
     @media (max-width: 768px) {
-      header { 
-        padding: 1.5rem; 
-        flex-direction: column;
-        gap: 1rem;
-      }
-      
+      header { padding: 1.5rem; flex-direction: column; gap: 1rem; }
       .hero-section { padding: 0 5%; }
       .archive-section { padding: 3rem 5%; }
-      
-      .editorial-spread { 
-        padding: 1.5rem; 
-        margin-bottom: 2.5rem; 
-      }
-      
-      .spread-header { 
-        grid-template-columns: 1fr; 
-        gap: 1.5rem;
-        padding-bottom: 1.5rem;
-      }
-      
+      .editorial-spread { padding: 1.5rem; margin-bottom: 2.5rem; }
+      .spread-header { grid-template-columns: 1fr; gap: 1.5rem; padding-bottom: 1.5rem; }
       .poster-frame img { height: auto; aspect-ratio: 2/3; }
-      
       .meta-details h2 { font-size: 2.2rem; }
-      
       .form-card { padding: 1.5rem; }
-      
       .comment-form { flex-direction: column; }
       .comment-input-name, .comment-input-text { width: 100%; }
       .comment-submit-btn { width: 100%; padding: 1rem; }
@@ -351,13 +278,14 @@
 </head>
 <body>
 
+  <!-- 1. The Deep Parallax Layer -->
+  <div class="parallax-bg"></div>
+
   <header>
     <div class="brand" ondblclick="window.secretLogin()">CineLogue</div>
-    <!-- New Navigation Scaffold -->
     <nav>
       <button class="nav-btn active" onclick="window.switchTab('mainArchive')">Reviews</button>
-      <button class="nav-btn" onclick="window.switchTab('visuals')">Visuals</button>
-      <button class="nav-btn" onclick="window.switchTab('about')">Strategy</button>
+      <button class="nav-btn" onclick="window.switchTab('visuals')">Poster Art</button>
     </nav>
   </header>
 
@@ -367,32 +295,27 @@
       <h1 class="hero-title">CINELOGUE<br>REVIEWS</h1>
       <p class="hero-subtitle">I'd love any feedback, please leave a comment</p>
     </section>
-
-    <section class="archive-section" id="archiveContainer">
-      <!-- Reviews load here automatically -->
-    </section>
+    <section class="archive-section" id="archiveContainer"></section>
   </main>
 
-  <!-- TAB 2: VISUALS GALLERY -->
+  <!-- TAB 2: POSTER ART GALLERY -->
   <main id="visuals" class="tab-content">
-    <div class="placeholder-content">
-      <h2>Concept & Illustration</h2>
-      <p style="margin-top: 1rem; color: #a1a5ab;">A dedicated space for custom digital art and lighting studies.</p>
-    </div>
+    <section class="hero-section" style="height: 60vh;">
+      <h1 class="hero-title">POSTER<br>ART</h1>
+    </section>
+    <section class="archive-section" id="visualsContainer"></section>
   </main>
 
-  <!-- TAB 3: ABOUT / STRATEGY -->
-  <main id="about" class="tab-content">
-    <div class="placeholder-content">
-      <h2>Industry Profile</h2>
-      <p style="margin-top: 1rem; color: #a1a5ab;">A professional biography detailing academic background and curation strategy.</p>
-    </div>
-  </main>
-
+  <!-- THE HIDDEN ADMIN DESK -->
   <div id="adminModal" class="admin-modal">
     <div class="form-card">
       <button class="close-btn" onclick="window.closeModal()">✕</button>
-      <h2 style="text-transform: uppercase; margin-bottom: 2rem;">Director's Desk</h2>
+      
+      <div class="admin-tabs">
+        <button id="btnReviewForm" class="admin-tab-btn active" onclick="window.toggleAdminForm('review')">Post Review</button>
+        <button id="btnVisualForm" class="admin-tab-btn" onclick="window.toggleAdminForm('visual')">Post Poster Art</button>
+      </div>
+
       <form id="reviewForm" onsubmit="window.submitReview(event)">
         <input type="text" id="filmTitle" placeholder="Film Title & Year" required>
         <select id="rating">
@@ -402,11 +325,19 @@
           <option value="★★☆☆☆">★★☆☆☆ (2 Stars)</option>
           <option value="★☆☆☆☆">★☆☆☆☆ (1 Star)</option>
         </select>
-        <input type="url" id="imageUrl" placeholder="Poster Image Link (Your Art)">
+        <input type="url" id="imageUrl" placeholder="Poster Image Link">
         <textarea id="essayText" rows="6" placeholder="Write your full essay review..." required></textarea>
         <input type="text" id="authorName" value="Alex" required>
         <button type="submit" class="submit-btn">Publish Review</button>
       </form>
+
+      <form id="visualForm" onsubmit="window.submitVisual(event)" style="display: none;">
+        <input type="text" id="vTitle" placeholder="Artwork Title" required>
+        <input type="url" id="vImageUrl" placeholder="High-Res Image Link" required>
+        <textarea id="vCaption" rows="5" placeholder="Caption or context..." required></textarea>
+        <button type="submit" class="submit-btn">Publish Poster Art</button>
+      </form>
+
     </div>
   </div>
 
@@ -426,20 +357,29 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Dynamic Tab Navigation
+    // --- Parallax Scrolling Engine ---
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      const bg = document.querySelector('.parallax-bg');
+      if (bg) {
+        bg.style.transform = `translateY(${scrolled * 0.3}px)`;
+      }
+    });
+
+    // --- Dynamic Tab Navigation ---
     window.switchTab = function(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
       
       document.getElementById(tabId).classList.add('active');
-      window.scrollTo(0, 0); // Scroll to top on tab change
+      window.scrollTo(0, 0); 
       
       const buttons = document.querySelectorAll('.nav-btn');
       if (tabId === 'mainArchive') buttons[0].classList.add('active');
       if (tabId === 'visuals') buttons[1].classList.add('active');
-      if (tabId === 'about') buttons[2].classList.add('active');
     }
 
+    // --- Modal Logic ---
     window.secretLogin = function() {
       const passcode = prompt("Director Access Required:");
       if (passcode === "action") {
@@ -451,7 +391,43 @@
       document.getElementById('adminModal').classList.remove('active');
     }
 
-    // Scroll Reveal Observer Setup
+    window.toggleAdminForm = function(type) {
+      if (type === 'review') {
+        document.getElementById('reviewForm').style.display = 'block';
+        document.getElementById('visualForm').style.display = 'none';
+        document.getElementById('btnReviewForm').classList.add('active');
+        document.getElementById('btnVisualForm').classList.remove('active');
+      } else {
+        document.getElementById('reviewForm').style.display = 'none';
+        document.getElementById('visualForm').style.display = 'block';
+        document.getElementById('btnReviewForm').classList.remove('active');
+        document.getElementById('btnVisualForm').classList.add('active');
+      }
+    }
+
+    // --- 3D Mouse Tracked Tilt Engine ---
+    const setup3DTilt = () => {
+      document.querySelectorAll('.reveal-card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          
+          // Calculates a subtle max 4 degree tilt
+          const rx = ((y / rect.height) - 0.5) * -8; 
+          const ry = ((x / rect.width) - 0.5) * 8;
+          
+          card.style.setProperty('--rx', `${rx}deg`);
+          card.style.setProperty('--ry', `${ry}deg`);
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.setProperty('--rx', `0deg`);
+          card.style.setProperty('--ry', `0deg`);
+        });
+      });
+    }
+
+    // --- Scroll Reveal Observer Setup ---
     const setupScrollObserver = () => {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
@@ -461,11 +437,15 @@
         });
       }, { threshold: 0.1 }); 
 
-      document.querySelectorAll('.editorial-spread').forEach((card) => {
+      document.querySelectorAll('.reveal-card').forEach((card) => {
         observer.observe(card);
       });
+      
+      // Hook up the 3D tilt engine after cards load
+      setup3DTilt();
     }
 
+    // --- SUBMITTING & LOADING REVIEWS ---
     window.submitReview = async function(e) {
       e.preventDefault();
       const title = document.getElementById('filmTitle').value;
@@ -475,14 +455,8 @@
       const author = document.getElementById('authorName').value;
 
       await addDoc(collection(db, "reviews"), {
-        title: title, 
-        rating: rating, 
-        imageUrl: imageUrl, 
-        essay: essay, 
-        author: author, 
-        thumbsUp: 0,
-        thumbsDown: 0, 
-        timestamp: new Date()
+        title: title, rating: rating, imageUrl: imageUrl, essay: essay, 
+        author: author, thumbsUp: 0, thumbsDown: 0, timestamp: new Date()
       });
 
       document.getElementById('reviewForm').reset();
@@ -507,20 +481,34 @@
       window.loadArchive();
     }
 
-    window.reactToReview = async function(reviewId, type) {
+    // Instant Haptic Reaction Engine
+    window.reactToReview = async function(e, reviewId, type) {
       const storageKey = `reacted_${reviewId}`;
       if (localStorage.getItem(storageKey)) {
         alert("You have already reacted to this review!");
         return;
       }
+      
+      const btn = e.currentTarget;
+      
+      // Fire the haptic burst animation
+      btn.classList.add('burst-anim');
+      
+      // Instantly tick the number up on screen without reloading the page
+      const countSpan = btn.querySelector('.count');
+      let currentCount = parseInt(countSpan.innerText);
+      countSpan.innerText = currentCount + 1;
+      
+      // Save memory so they can't double-click
+      localStorage.setItem(storageKey, 'true');
+
+      // Silently update the database in the background
       const reviewRef = doc(db, "reviews", reviewId);
       if (type === 'up') {
         await updateDoc(reviewRef, { thumbsUp: increment(1) });
       } else if (type === 'down') {
         await updateDoc(reviewRef, { thumbsDown: increment(1) });
       }
-      localStorage.setItem(storageKey, 'true');
-      window.loadArchive(); 
     }
 
     window.loadArchive = async function() {
@@ -538,7 +526,6 @@
       for (const doc of querySnapshot.docs) {
         const data = doc.data();
         const reviewId = doc.id; 
-        
         const thumbsUpCount = data.thumbsUp || 0; 
         const thumbsDownCount = data.thumbsDown || 0; 
 
@@ -557,7 +544,7 @@
         });
 
         const reviewCard = document.createElement('article');
-        reviewCard.className = 'editorial-spread';
+        reviewCard.className = 'editorial-spread reveal-card';
         
         reviewCard.innerHTML = `
           <div class="spread-header">
@@ -569,12 +556,8 @@
               <div class="stars-large">${data.rating}</div>
               
               <div class="reaction-bar">
-                <button class="react-btn" onclick="window.reactToReview('${reviewId}', 'up')">
-                  👍 ${thumbsUpCount}
-                </button>
-                <button class="react-btn" onclick="window.reactToReview('${reviewId}', 'down')">
-                  👎 ${thumbsDownCount}
-                </button>
+                <button class="react-btn" onclick="window.reactToReview(event, '${reviewId}', 'up')">👍 <span class="count">${thumbsUpCount}</span></button>
+                <button class="react-btn" onclick="window.reactToReview(event, '${reviewId}', 'down')">👎 <span class="count">${thumbsDownCount}</span></button>
               </div>
             </div>
           </div>
@@ -593,12 +576,56 @@
         `;
         container.appendChild(reviewCard);
       }
+      setupScrollObserver();
+    }
+
+    // --- SUBMITTING & LOADING POSTER ART ---
+    window.submitVisual = async function(e) {
+      e.preventDefault();
+      const title = document.getElementById('vTitle').value;
+      const imageUrl = document.getElementById('vImageUrl').value;
+      const caption = document.getElementById('vCaption').value;
+
+      await addDoc(collection(db, "visuals"), {
+        title: title, imageUrl: imageUrl, caption: caption, timestamp: new Date()
+      });
+
+      document.getElementById('visualForm').reset();
+      window.closeModal();
+      window.loadVisuals();
+      window.switchTab('visuals'); 
+    }
+
+    window.loadVisuals = async function() {
+      const container = document.getElementById('visualsContainer');
+      const q = query(collection(db, "visuals"), orderBy("timestamp", "desc"));
+      const querySnapshot = await getDocs(q);
       
-      // Fire up the scroll animation engine once reviews are loaded
+      if (querySnapshot.empty) {
+        container.innerHTML = `<div style="text-align: center; color: white;">No poster art published yet.</div>`;
+        return;
+      }
+
+      let gridHTML = '<div class="visuals-grid">';
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        gridHTML += `
+          <article class="visual-card reveal-card">
+            <img src="${data.imageUrl}" alt="${data.title}">
+            <h3>${data.title}</h3>
+            <p>${data.caption}</p>
+          </article>
+        `;
+      });
+      gridHTML += '</div>';
+      
+      container.innerHTML = gridHTML;
       setupScrollObserver();
     }
 
     window.loadArchive();
+    window.loadVisuals();
   </script>
 </body>
 </html>
+ 
